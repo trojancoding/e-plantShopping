@@ -1,9 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
+import { addItem } from './CartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 function ProductList() {
+  const dispatch = useDispatch();
+  const cartItemCount = useSelector((state) => state.cart.itemCount);
+  const cartItems = useSelector((state) => state.cart.items);
+
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+  const [addedToCart, setAddedToCart] = useState({});
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+    setAddedToCart((prevState) => ({
+      ...prevState,
+      [product.name]: true,
+    }));
+  };
+
+  useEffect(() => {
+    let updatedAddedToCartList = {};
+    cartItems.forEach((item) => {
+      updatedAddedToCartList[item.name] = true;
+    });
+    setAddedToCart(updatedAddedToCartList);
+  }, [cartItemCount]);
 
   const plantsArray = [
     {
@@ -291,7 +314,7 @@ function ProductList() {
               alt=""
             />
             <a href="/" style={{ textDecoration: 'none' }}>
-              <div>
+              <div style={{ marginLeft: '30px' }}>
                 <h3 style={{ color: 'white' }}>Paradise Nursery</h3>
                 <i style={{ color: 'white' }}>Where Green Meets Serenity</i>
               </div>
@@ -308,6 +331,7 @@ function ProductList() {
           <div>
             {' '}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
+              <h1 className="cart_quantity_count">{cartItemCount}</h1>
               <h1 className="cart">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +359,43 @@ function ProductList() {
         </div>
       </div>
       {!showCart ? (
-        <div className="product-grid"></div>
+        <div className="product-grid">
+          {plantsArray.map((category, index) => (
+            <div key={index}>
+              <div className="product-category">
+                <h1>{category.category}</h1>
+              </div>
+              <div className="product-list">
+                {category.plants.map((plant, plantIndex) => (
+                  <div className="product-card" key={plantIndex}>
+                    <div className="product-title">{plant.name}</div>
+                    <img
+                      className="product-image"
+                      src={plant.image}
+                      alt={plant.name}
+                    />
+                    <div className="product-price">{plant.cost}</div>
+                    <div className="product-description">
+                      {plant.description}
+                    </div>
+                    {addedToCart[plant.name] ? (
+                      <button className="product-button added-to-cart">
+                        Add to Cart
+                      </button>
+                    ) : (
+                      <button
+                        className="product-button"
+                        onClick={() => handleAddToCart(plant)}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <CartItem onContinueShopping={handleContinueShopping} />
       )}

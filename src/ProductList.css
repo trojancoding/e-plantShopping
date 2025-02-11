@@ -59,6 +59,18 @@ body {
   align-items: center;
   justify-content: center;
 }
+.product-category {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.product-category h1 {
+  border-top: 2px grey solid;
+  border-bottom: 2px grey solid;
+  padding: 0px 50px;
+  margin: 20px 0;
+}
 
 /* Product Card */
 .product-card {
@@ -93,6 +105,10 @@ body {
   color: #e74c3c;
   font-size: 1.2rem;
   margin-bottom: 10px;
+}
+
+.product-description {
+  font-style: italic;
 }
 
 .product-image {
@@ -218,6 +234,7 @@ body {
 
 .product-button.added-to-cart {
   background-color: grey; /* Grey when product is added */
+  cursor: default;
 }
 @media (max-width: 1200px) {
   .product-card {
